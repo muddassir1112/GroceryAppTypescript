@@ -1,26 +1,47 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { createContext, useState } from "react";
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Outlet,
+  Route,
+  RouterProvider,
+} from "react-router-dom";
+
+import "./App.css";
+import { Banner } from "./component/Banner";
+import { Cart } from "./component/Cart";
+import { Navbar } from "./component/Navbar";
+import { SignIn } from "./Forms/LogIn";
+import { SignUp } from "./Forms/SignUp";
+export const ProdContext = createContext({});
 
 function App() {
+  const [productDetails, setProductDetails] = useState<[]>([]);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const AppLayout = () => (
+    <>
+      <Navbar />
+      <Outlet />
+    </>
+  );
+  let router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route element={<AppLayout />}>
+        <Route path="/" element={<Banner />} />
+        <Route path="/SignIn" element={<SignIn />} />
+        <Route path="/SignUp" element={<SignUp />} />
+        <Route path="/Cart" element={<Cart />} />
+      </Route>
+    )
+  );
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <ProdContext.Provider
+        value={{ productDetails, setProductDetails, loggedIn, setLoggedIn }}
+      >
+        <RouterProvider router={router} />
+      </ProdContext.Provider>
     </div>
   );
 }
-
 export default App;
